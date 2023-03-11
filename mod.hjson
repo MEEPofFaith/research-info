@@ -14,7 +14,7 @@ main: "researchinfo.ResearchInfo"
 description: "Displays research info in block stats."
 
 #the mod version
-version: 1.0
+version: 1
 
 #the minimum game build required to run this mod
 minGameVersion: 140
