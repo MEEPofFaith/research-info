@@ -28,7 +28,9 @@ public class ResearchInfo extends Mod{
             loadSettings();
 
             //Add research info to the stats of every block and unit
-            TechTree.all.each(t -> !t.content.alwaysUnlocked && (t.content instanceof Block || t.content instanceof UnitType) && (t.requirements.length > 0 || t.objectives.any()), t -> {
+            TechTree.all.each(t -> !t.content.alwaysUnlocked &&
+                    (t.content instanceof Block || t.content instanceof UnitType) &&
+                    (t.parent != null || t.requirements.length > 0 || t.objectives.contains(o -> !(o instanceof Research r) || !(r.content instanceof Item))), t -> {
                 t.content.stats.add(researchInfo, table -> researchInfo(table, t));
             });
         });
@@ -50,6 +52,12 @@ public class ResearchInfo extends Mod{
         table.row();
         table.table(Tex.button, t -> {
             t.left().defaults().left();
+            if(node.parent != null){
+                divider(t, "@previous", Pal.accent);
+                UnlockableContent c = node.parent.content;
+                t.add((c.hasEmoji() ? c.emoji() + " " : "") + c.localizedName).color(Color.lightGray);
+                t.row();
+            }
             if(node.requirements.length > 0){
                 divider(t, "@resources", Pal.accent);
                 if(settings.getBool("ri-verbose-resources", false)){
@@ -58,7 +66,7 @@ public class ResearchInfo extends Mod{
                             list.left();
                             list.image(req.item.uiIcon).size(8 * 3).padRight(3);
                             list.add(req.item.localizedName + ": " + req.amount).color(Color.lightGray);
-                        }).fillX().left();
+                        }).fillX();
                         t.row();
                     }
                 }else{
@@ -81,7 +89,7 @@ public class ResearchInfo extends Mod{
                     }else{
                         text += o.display();
                     }
-                    t.add(text).color(Color.lightGray).left();
+                    t.add(text).color(Color.lightGray);
                     t.row();
                 }
             }
