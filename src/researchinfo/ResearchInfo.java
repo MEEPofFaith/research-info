@@ -49,8 +49,7 @@ public class ResearchInfo extends Mod{
 
     //void so that not every instance of this StatValue needs this code within it; only one instance of this code.
     public static void researchInfo(Table table, TechNode node){
-        table.row();
-        table.table(Tex.button, t -> {
+        Table rc = new Table(Tex.button, t -> {
             t.left().defaults().left();
             if(node.parent != null){
                 divider(t, "@previous", Pal.accent);
@@ -93,7 +92,13 @@ public class ResearchInfo extends Mod{
                     t.row();
                 }
             }
-        }).left();
+        });
+        Collapser coll = new Collapser(rc, true);
+        coll.setDuration(0.1f);
+
+        table.button(Icon.downOpen, Styles.emptyi, () -> coll.toggle(false)).update(i -> i.getStyle().imageUp = (!coll.isCollapsed() ? Icon.upOpen : Icon.downOpen)).size(8).padLeft(16f).expandX().left();
+        table.row();
+        table.add(coll).left().padTop(3).colspan(2);
     }
 
     static void divider(Table t, String label, Color color){
